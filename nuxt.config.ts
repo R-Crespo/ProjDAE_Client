@@ -9,8 +9,8 @@ export default defineNuxtConfig({
       }
     ]
   },
-  plugins: ['~/plugins/bootstrap.js'],
-  css: ['bootstrap/dist/css/bootstrap.css'],
+  plugins: [{ src: '~/plugins/bootstrap.js', mode: 'client' }],
+  css: ['bootstrap/dist/css/bootstrap.min.css'],
   runtimeConfig: {
     public: {
       API_URL: process.env.API_URL || 'http://localhost:8080/academics/api'

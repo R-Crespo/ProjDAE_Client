@@ -2,7 +2,7 @@
     <!-- Header Section -->
     <header class="header">
       <nav class="navbar">
-        <div class="row">
+        <div class="row ms-2">
           <!--Cliente Links-->
           <nuxt-link class="nav-link col nav-item" to="/clientes/_username">HomePage</nuxt-link>
           <nuxt-link class="nav-link col" to="/encomendas/_username">Encomendas</nuxt-link>
@@ -28,7 +28,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { useAuthStore } from "~/store/auth-store.js";
+import { useAuthStore } from "store/auth-store.js";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -55,31 +55,17 @@ function logout() {
 }
 
 .nav-link {
-  margin: 0 1rem;
+  padding: 0 1rem;
   text-decoration: none;
-  color: Black;
+  color: white;
   font-weight: bold;
 }
 
 .nav-link:hover {
   color: rgba(72, 70, 67, 0.98);
 }
-.main
--content {
+.main-content {
   padding: 2rem;
 }
 
-.footer {
-  background-color: #333;
-  color: black;
-  text-align: center;
-  padding: 1rem;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-}
-
-.footer p {
-  margin: 0;
-}
 </style>
