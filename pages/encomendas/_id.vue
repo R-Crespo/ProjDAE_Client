@@ -25,6 +25,29 @@
             </ul>
           </div>
         </div>
+        <h2>Minhas encomendas</h2>
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col" >Id</th>
+            <th scope="col" >Total</th>
+            <th scope="col" >Estado</th>
+            <th scope="col" >Armazem de saida</th>
+            <th scope="col" >Data de Entrega</th>
+            <th scope="col" >Informaçao Adicional</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="encomenda in encomendas">
+            <td class="pt-3">{{ encomenda.id }}</td>
+            <td class="pt-3">{{ encomenda.total }} €</td>
+            <td class="pt-3"><button class="btn" :class="estadoClass(encomenda.estado)">{{ encomenda.estado }}</button></td>
+            <td class="pt-3">{{ encomenda.armazem_saida }}</td>
+            <td class="pt-3">{{ encomenda.data_de_entrega }}</td>
+            <td class="align-content-center"><button class="btn btn-secondary"><i class="bi bi-list-columns-reverse"></i></button></td>
+          </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -33,7 +56,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-
+const config = useRuntimeConfig()
+const api = config.public.API_URL
 // Simulated data for an order (normally this would be fetched from an API or store)
 const encomendas = [
   { id: 1, total: '67.45', estado: 'Entregue', armazem_saida: 'Amor', data_de_entrega: '10/12/2022', produtos: [{ id: 1, nome: 'Produto 1', marca: 'Marca A', preco: '10', fornecedor: 'Fornecedor X' },
@@ -77,6 +101,20 @@ const estadoClass = (estado) => {
 }
 
 .badge.bg-warning {
+  background-color: yellow;
+}
+
+.estado-entregue {
+  background-color: green;
+  width: 20px;
+  height: 20px;
+}
+
+.estado-cancelado {
+  background-color: red;
+}
+
+.estado-other {
   background-color: yellow;
 }
 </style>
