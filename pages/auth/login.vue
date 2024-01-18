@@ -36,7 +36,7 @@ async function login() {
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     },
-    body: loginFormData.value
+    body: JSON.stringify(loginFormData.value)
   })
   if (error.value) {
     messages.value.push({tokenError: error.value.message})
