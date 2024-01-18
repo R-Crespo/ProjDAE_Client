@@ -15,9 +15,13 @@
     </div>
   </div>
 </template>
+
+
 <script setup>
 import {useAuthStore} from "~/store/auth-store.js"
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const config = useRuntimeConfig()
 const api = config.public.API_URL
 const loginFormData = ref({
@@ -55,5 +59,14 @@ async function login() {
     return
   }
   user.value = userData.value
+
+  //ALTERAR PARA VALOR DINAMICO
+  if (user.value?.tipo === "Fornecedor") {
+    router.push(`/produtos/_username`); // alterar para    router.push(`/produtos/${user.value.username}`);
+  } else if (user.value?.tipo === "Operador") {
+    router.push(`/encomendas/_username`); // alterar para router.push(`/encomendas/${user.value.username}`);
+  } else if (user.value?.tipo === "Cliente") {
+    router.push(`/clientes/_username`); // alterar para router.push(`/clientes/${user.value.username}`);
+  }
 }
 </script>
