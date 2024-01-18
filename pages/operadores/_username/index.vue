@@ -33,9 +33,30 @@ import { ref } from 'vue';
 
 // Static data for the operator's completed deliveries
 const entregas = ref([
-  { id: 1, total: '120.50', estado: 'Entregue', armazem_saida: 'Central', data_de_entrega: '15/12/2022' },
-  // Add more static deliveries as needed
+  {
+    id: 1,
+    total: '150.00',
+    estado: 'Entregue',
+    armazem_saida: 'Armazém Central',
+    data_de_entrega: '2023-01-15'
+  },
+  {
+    id: 2,
+    total: '200.00',
+    estado: 'Entregue',
+    armazem_saida: 'Armazém Secundário',
+    data_de_entrega: '2023-01-18'
+  },
+  {
+    id: 3,
+    total: '420.00',
+    estado: 'Entregue',
+    armazem_saida: 'Armazém Secundário',
+    data_de_entrega: '2023-01-17'
+  },
+  // ... more static deliveries
 ]);
+
 </script>
 
 <style scoped>
