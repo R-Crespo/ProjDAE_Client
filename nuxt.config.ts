@@ -13,7 +13,7 @@ export default defineNuxtConfig({
   css: ['bootstrap/dist/css/bootstrap.min.css'],
   runtimeConfig: {
     public: {
-      API_URL: process.env.API_URL || 'http://localhost:8080/academics/api'
+      API_URL: process.env.API_URL || 'http://localhost:8080/ProjDAE_Java/api'
     }
   },
   devtools: { enabled: true },

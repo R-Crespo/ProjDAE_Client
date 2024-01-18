@@ -4,11 +4,11 @@
       <nav class="navbar">
         <div class="row ms-2">
           <!--Cliente Links-->
-          <nuxt-link class="nav-link col nav-item" to="/clientes/_username">HomePage</nuxt-link>
-          <nuxt-link class="nav-link col" to="/encomendas/_username">Encomendas</nuxt-link>
+          <nuxt-link v-if="authStore.isCliente" class="nav-link col nav-item" to="/clientes/_username">HomePage</nuxt-link>
+          <nuxt-link v-if="authStore.isCliente || authStore.isOperador" class="nav-link col" to="/encomendas/_username">Encomendas</nuxt-link>
           <!--Fornecedor Links
           <nuxt-link class="nav-link col-sm" to="/fornecedores/_username">Home Page</nuxt-link>-->
-          <nuxt-link class="nav-link col" to="/produtos/_username">Produtos</nuxt-link>
+          <nuxt-link v-if="authStore.isFornecedor" class="nav-link col" to="/produtos/_username">Produtos</nuxt-link>
           <!--Operador Links
           <nuxt-link class="nav-link col-sm" to="/operadores/_username">Home Page</nuxt-link>
           <nuxt-link class="nav-link col-sm" to="/auth-test">Minhas Encomendas</nuxt-link>-->
