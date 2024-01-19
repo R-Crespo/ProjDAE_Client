@@ -3,42 +3,78 @@
     <div>
       <h1 class="d-flex justify-content-center">Produto #1</h1>
       <br>
-      <form @submit.prevent="create">
-        <div class="row">
-          <div class="mb-3 col">
-            <label for="inputNome" class="form-label">Nome</label>
-            <input type="text" v-model="produto.nome" class="form-control" id="inputNome" readonly>
+      <form @submit.prevent="create" class="row">
+        <div class="col">
+          <div class="row">
+            <div class="mb-3 col">
+              <label for="inputNome" class="form-label">Nome</label>
+              <input type="text" v-model="produto.nome" class="form-control" id="inputNome" :readonly="!authStore.isFornecedor">
+            </div>
+            <div class="mb-3 col">
+              <label for="inputMarca" class="form-label">Marca</label>
+              <input type="text" v-model="produto.marca" class="form-control" id="inputMarca" :readonly="!authStore.isFornecedor">
+            </div>
           </div>
-          <div class="mb-3 col">
-            <label for="inputMarca" class="form-label">Marca</label>
-            <input type="text" v-model="produto.marca" class="form-control" id="inputMarca" readonly>
+          <div class="row">
+            <div class="mb-3 col">
+              <label for="inputFornecedor" class="form-label">Fornecedor</label>
+              <input type="text" v-model="produto.fornecedor" class="form-control" id="inputFornecedor" :readonly="!authStore.isFornecedor">
+            </div>
+            <div class="mb-3 col">
+              <label for="inputTipo" class="form-label">Tipo</label>
+              <input type="text" v-model="produto.tipo" class="form-control" id="inputTipo" :readonly="!authStore.isFornecedor">
+            </div>
+          </div>
+          <div class="row">
+            <div class="mb-3 col">
+              <label for="inputQuantidade" class="form-label">Quantidade</label>
+              <input type="number" v-model="produto.quantidade" class="form-control" id="inputQuantidade" :readonly="!authStore.isFornecedor">
+            </div>
+            <div class="mb-3 col">
+              <label for="inputUnidadeDeMedida" class="form-label">Unidade de medida</label>
+              <input type="text" v-model="produto.medida" class="form-control" id="inputUnidadeDeMedida" :readonly="!authStore.isFornecedor">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="inputPreco" class="form-label">Preço</label>
+            <input type="number" v-model="produto.preco" class="form-control" id="inputPreco" :readonly="!authStore.isFornecedor">
+          </div>
+          <div class="mb-3">
+            <label for="inputConteudo" class="form-label">Descricao</label>
+            <textarea rows="3" type="text" v-model="produto.Descricap" class="form-control" id="inputConteudo" :readonly="!authStore.isFornecedor"></textarea>
+          </div>
+          <div class="d-flex justify-content-around">
+            <button class="btn btn-secondary me-2 col-4" type="reset">Back</button>
           </div>
         </div>
-        <div class="mb-3 col">
-          <label for="inputFornecedor" class="form-label">Fornecedor</label>
-          <input type="text" v-model="produto.fornecedor" class="form-control" id="inputFornecedor" readonly>
-        </div>
-        <div class="mb-3">
-          <label for="inputConteudo" class="form-label">Conteudo</label>
-          <textarea rows="3" type="text" v-model="produto.conteudo" class="form-control" id="inputConteudo" readonly></textarea>
-        </div>
-        <div class="row">
-          <div class="mb-3 col">
-            <label for="inputQuantidade" class="form-label">Quantidade</label>
-            <input type="number" v-model="produto.quantidade" class="form-control" id="inputQuantidade" readonly>
+        <div class="col" v-if="authStore.isFornecedor">
+          <div class="mb-3">
+            <label for="inputTipoEmbalagem" class="form-label">Tipo de Embalagem</label>
+            <input type="text" v-model="produto.embalagemPrototipo.tipo" class="form-control" id="inputTipoEmbalagem" >
           </div>
-          <div class="mb-3 col">
-            <label for="inputUnidadeDeMedida" class="form-label">Unidade de medida</label>
-            <input type="text" v-model="produto.medida" class="form-control" id="inputUnidadeDeMedida" readonly>
+          <div class="mb-3">
+            <label for="inputFuncaoEmbalagem" class="form-label">Função da Embalagem</label>
+            <input type="text" v-model="produto.embalagemPrototipo.funcao" class="form-control" id="inputFuncaoEmbalagem">
           </div>
-        </div>
-        <div class="d-flex justify-content-around">
-          <button class="btn btn-secondary me-2 col-4" type="reset">Back</button>
-          <button class="btn btn-primary col-4" type="submit">Update</button>
+          <div class="mb-3">
+            <label for="inputMaterialEmbalagem" class="form-label">Material da Embalagem</label>
+            <input type="text" v-model="produto.embalagemPrototipo.material" class="form-control" id="inputMaterialEmbalagem">
+          </div>
+          <div class="mb-3">
+            <label for="inputPesoEmbalagem" class="form-label">Peso da Embalagem</label>
+            <input type="Number" v-model="produto.embalagemPrototipo.peso" class="form-control" id="inputPesoEmbalagem">
+          </div>
+          <div class="mb-3">
+            <label for="inputVolumeEmbalagem" class="form-label">Volume da Embalagem</label>
+            <input type="Number" v-model="produto.embalagemPrototipo.volume" class="form-control" id="inputVolumeEmbalagem">
+          </div>
+          <div class="d-flex justify-content-around" v-if="authStore.isFornecedor">
+            <button class="btn btn-primary col-4 mt-5" type="submit">Atualizar</button>
+          </div>
         </div>
       </form>
     </div>
-    <div class="d-flex justify-content-end w-50">
+    <div class="d-flex justify-content-end w-50" v-if="authStore.isFornecedor">
       <div>
         <div class="d-flex flex-row justify-content-end">
           <h1 class="d-flex justify-content-center">Regras Produto #{{ produto.id }}</h1>
@@ -55,7 +91,7 @@
       </div>
     </div>
   </div>
-    <div class="col mt-5">
+    <div class="col mt-5" v-if="authStore.isFornecedor">
       <h2>Sensores</h2>
       <br>
       <table class="table">
@@ -82,9 +118,29 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import {computed, ref} from 'vue';
-const router = useRouter()
+import {useAuthStore} from "../../../store/auth-store.js";
 
-const produto = ref({ id: 1, nome: 'Produto 1', marca: 'Marca A', preco: '10', fornecedor: 'Fornecedor X', quantidade: "330", medida:"ml" })
+const router = useRouter()
+const authStore = useAuthStore()
+
+const produto = ref({
+  id: 1,
+  nome: 'Produto 1',
+  marca: 'Marca A',
+  preco: '10',
+  tipo: '',
+  fornecedor: 'Fornecedor X',
+  quantidade: "330",
+  medida:"ml",
+  embalagemPrototipo: {
+    tipo: '',
+    funcao: '',
+    material: '',
+    peso: 0,
+    volume: 0
+  },
+  regras: []
+})
 const regras = ref([]);
 const id = ref(0);
 

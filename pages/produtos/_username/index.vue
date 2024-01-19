@@ -86,6 +86,7 @@ const navigateToCreatePage = () => {
 const verDetalhes = (id) => {
   // Aqui você pode adicionar lógica para ver detalhes do produto
   console.log('Ver detalhes do produto com id:', id);
+  router.push('/produtos/_id')
 };
 
 const removerProduto = (id) => {
