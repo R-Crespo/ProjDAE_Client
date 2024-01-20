@@ -145,8 +145,7 @@ const fetchProducts = async () => {
     console.error('Erro ao buscar produtos:', error);
   }
 };
-//NAO FINALIZADO
-/*
+
 const finalizarEncomenda = async () => {
   // Validate the delivery address
   if (enderecoEntrega.value.trim() === '') {
@@ -195,7 +194,6 @@ const finalizarEncomenda = async () => {
     alert('Ocorreu um erro ao criar a encomenda. Por favor, tente novamente.');
   }
 };
-*/
 
 
 onMounted(fetchProducts);
