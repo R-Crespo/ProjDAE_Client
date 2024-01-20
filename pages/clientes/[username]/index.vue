@@ -92,25 +92,60 @@
 </template>
 <script setup>
 import { ref, onMounted } from 'vue';
-import {useAuthStore} from "~/store/auth-store.js"
+import { useAuthStore } from '~/store/auth-store.js';
 
-const authStore = useAuthStore()
-
-const config = useRuntimeConfig()
-const api = config.public.API_URL
+const authStore = useAuthStore();
+const config = useRuntimeConfig();
+const api = config.public.API_URL;
 //const {data: products, error, refresh} = await useFetch(`${api}/products`)
 // Reactive data for the modal and address
 // Reactive state for modal visibility and address
 const showAddressModal = ref(false);
 const enderecoEntrega = ref('');
 
-// Other reactive state for cart products
-// ... your existing refs and functions ...
+const encomendas = ref([]);
 
-// Function to finalize the order and handle the address
-// Function to finalize the order and handle the address
-// Function to finalize the order and handle the address
-// Function to finalize the order and handle the address
+
+
+
+
+// Function to clear the cart
+const clearCarrinho = () => {
+  productsCarrinho.value = [];
+  enderecoEntrega.value = ''; // Also clear the address field
+};
+
+const products = ref([]);
+const productsCarrinho = ref([]);
+
+function addProdutoToCarrinho(produto) {
+  const existingProduct = productsCarrinho.value.find(p => p.id === produto.id);
+  if (!existingProduct) {
+    produto.unidades = 1; // inicializa a propriedade unidades
+    productsCarrinho.value.push({...produto});
+    console.log(productsCarrinho.value); // Adicione este log para verificar a estrutura
+  }
+}
+
+
+function removeProdutoFromCarrinho(productId) {
+  productsCarrinho.value = productsCarrinho.value.filter(p => p.id !== productId);
+}
+
+
+function isProductInCart(produto) {
+  return productsCarrinho.value.some(p => p.id === produto.id);
+}
+
+const fetchProducts = async () => {
+  try {
+    const response = await authStore.fetchWithAuth(`${api}/produtos`);
+    products.value = response; // Atualize os produtos com a resposta da API
+  } catch (error) {
+    console.error('Erro ao buscar produtos:', error);
+  }
+};
+
 const finalizarEncomenda = async () => {
   // Validate the delivery address
   if (enderecoEntrega.value.trim() === '') {
@@ -161,41 +196,6 @@ const finalizarEncomenda = async () => {
 };
 
 
-
-
-// Function to clear the cart
-const clearCarrinho = () => {
-  productsCarrinho.value = [];
-  enderecoEntrega.value = ''; // Also clear the address field
-};
-
-const products = ref([]);
-const productsCarrinho = ref([]);
-
-function addProdutoToCarrinho(produto) {
-  const existingProduct = productsCarrinho.value.find(p => p.id === produto.id);
-  if (!existingProduct) {
-    produto.unidades = 1;
-    productsCarrinho.value.push({...produto});
-  }}
-
-function removeProdutoFromCarrinho(productId) {
-  productsCarrinho.value = productsCarrinho.value.filter(p => p.id !== productId);
-}
-
-
-function isProductInCart(produto) {
-  return productsCarrinho.value.some(p => p.id === produto.id);
-}
-
-const fetchProducts = async () => {
-  try {
-    const response = await authStore.fetchWithAuth(`${api}/produtos`);
-    products.value = response; // Atualize os produtos com a resposta da API
-  } catch (error) {
-    console.error('Erro ao buscar produtos:', error);
-  }
-};
 
 onMounted(fetchProducts);
 </script>

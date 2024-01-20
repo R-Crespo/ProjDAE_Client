@@ -110,48 +110,21 @@ const { user } = storeToRefs(authStore);
 
 const userType = computed(() => user.value?.tipo);
 const username = computed(() => user.value?.username);
-
+const config = useRuntimeConfig();
+const api = config.public.API_URL;
 // Static data for demonstration purposes
-const entregas = ref([
-  {
-    id: 1,
-    total: '150.00',
-    estado: 'Entregue',
-    armazem_saida: 'Armazém Central',
-    data_de_entrega: '2023-01-15'
-  },
-  {
-    id: 2,
-    total: '200.00',
-    estado: 'Entregue',
-    armazem_saida: 'Armazém Secundário',
-    data_de_entrega: '2023-01-18'
-  },
-  // ... more static deliveries
-]);
+const encomendas = ref([]);
 
+// Função para buscar as encomendas do cliente
+const fetchEncomendasCliente = async () => {
+  try {
+    const response = await authStore.fetchWithAuth(`${api}/encomendas/cliente/${authStore.username}`);
+    encomendas.value = response.data; // Supondo que a resposta da API tenha um campo data
+  } catch (error) {
+    console.error('Erro ao buscar encomendas do cliente:', error);
+  }
+};
 
-const encomendas = ref([
-  { id: 1, total: '67.45', estado: 'Entregue', armazem_saida: 'Amor', data_de_entrega: '10/12/2022' },
-  { id: 2, total: '98.65', estado: 'Em curso', armazem_saida: 'Gaia', data_de_entrega: '20/12/2022' },
-  { id: 3, total: '85.62', estado: 'Cancelado', armazem_saida: 'Gaia', data_de_entrega: '20/12/2022' }
-]);
-
-const encomendasPendentes = ref([
-  {
-    id: 4,
-    total: '75.00',
-    armazem_saida: 'Armazém Leste',
-    data_de_entrega: '2023-02-20'
-  },
-  {
-    id: 5,
-    total: '120.00',
-    armazem_saida: 'Armazém Oeste',
-    data_de_entrega: '2023-02-25'
-  },
-  // Adicione mais encomendas pendentes conforme necessário
-]);
 
 // Função para marcar uma encomenda como "Em curso"
 const marcarComoEmCurso = (encomenda) => {
@@ -177,6 +150,9 @@ const estadoClass = (estado) => {
       return 'btn-warning';
   }
 };
+
+
+onMounted(fetchEncomendasCliente);
 </script>
 
 <style scoped>
