@@ -61,7 +61,6 @@ async function login() {
   }
   user.value = userData.value
 
-
   //ALTERAR PARA VALOR DINAMICO
   if (authStore.isFornecedor) {
     router.push(`/produtos`);

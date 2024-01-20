@@ -19,7 +19,6 @@ export const useAuthStore = defineStore("authStore", () => {
         user.value = null
     }
 
-
     async function fetchWithAuth(url, options = {}) {
         if (token.value) {
             options.headers = {
