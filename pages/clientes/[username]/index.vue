@@ -162,7 +162,7 @@ const finalizarEncomenda = async () => {
     estado: 'Pendente', // Assuming 'Pendente' is a valid estado for a new encomenda
     armazem: 'Leiria', // Replace with actual armazem or retrieve from user selection if applicable
     // Since there's no direct data about EmbalagemTransporte these are placeholders
-    embalagemTransporteId: 0, // Placeholder for embalagemTransporteId
+    embalagemTransporteId: 1, // Placeholder for embalagemTransporteId
     encomendaProdutoDTOs: productsCarrinho.value.map(p => ({
       produtoId: p.id,
       quantidade: p.unidades
