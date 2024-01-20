@@ -9,6 +9,7 @@ export const useAuthStore = defineStore("authStore", () => {
     const isCliente = computed(() => user.value?.tipo === "Cliente");
     const isAuthenticated = computed(() => !!token.value);
 
+    const username = computed(() => user.value?.username);
 
 
 
@@ -34,5 +35,5 @@ export const useAuthStore = defineStore("authStore", () => {
         }
     }
 
-    return { token, user, logout, isCliente, isFornecedor, isOperador, fetchWithAuth,isAuthenticated }
+    return { token, user, logout, isCliente, isFornecedor, isOperador, fetchWithAuth, username , isAuthenticated}
 })

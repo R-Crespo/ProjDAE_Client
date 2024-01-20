@@ -11,7 +11,7 @@
               <th scope="col" >Marca</th>
               <th scope="col" >Preço</th>
               <th scope="col" >Quantidade</th>
-              <th scope="col">Fornecedor</th>
+
               <th scope="col" >Adicionar</th>
             </tr>
           </thead>
@@ -21,7 +21,7 @@
               <td class="pt-3">{{ produto.marca }}</td>
               <td class="pt-3">{{ produto.preco }} €</td>
               <td class="pt-3">{{ produto.quantidade }} {{ produto.medida }}</td>
-              <td class="pt-3">{{ produto.fornecedor }}</td>
+
               <td><button class="btn btn-success" @click="addProdutoToCarrinho(produto)" :disabled="isProductInCart(produto)"><i class="bi bi-plus-circle"></i></button></td>
             </tr>
           </tbody>
@@ -36,7 +36,7 @@
             <th scope="col" >Marca</th>
             <th scope="col">Preço</th>
             <th scope="col" >Quantidade</th>
-            <th scope="col">Fornecedor</th>
+
             <th scope="col">Unidades</th>
             <th scope="col">Remover</th>
           </tr>
@@ -47,7 +47,7 @@
               <td class="pt-3">{{ produto.marca }}</td>
               <td class="pt-3">{{ produto.preco }} €</td>
               <td class="pt-3">{{ produto.quantidade }} {{ produto.medida }}</td>
-              <td class="pt-3">{{ produto.fornecedor }}</td>
+
               <td>
                 <input class="form-check-input w-50" style="height: 2rem" type="number" v-model="produto.unidades" min="1">
               </td>
@@ -91,6 +91,11 @@
 
 </template>
 <script setup>
+import { ref, onMounted } from 'vue';
+import {useAuthStore} from "~/store/auth-store.js"
+
+const authStore = useAuthStore()
+
 const config = useRuntimeConfig()
 const api = config.public.API_URL
 //const {data: products, error, refresh} = await useFetch(`${api}/products`)
@@ -103,19 +108,60 @@ const enderecoEntrega = ref('');
 // ... your existing refs and functions ...
 
 // Function to finalize the order and handle the address
-const finalizarEncomenda = () => {
+// Function to finalize the order and handle the address
+// Function to finalize the order and handle the address
+// Function to finalize the order and handle the address
+const finalizarEncomenda = async () => {
+  // Validate the delivery address
   if (enderecoEntrega.value.trim() === '') {
     alert('Por favor, insira um endereço válido.');
     return;
   }
 
-  // Placeholder for order processing logic
-  console.log('Endereço de entrega:', enderecoEntrega.value);
 
-  // Reset the cart and close the modal
-  clearCarrinho();
-  showAddressModal.value = false;
+  // Construct the order payload
+  const encomendaPayload = {
+    clienteUsername: authStore.username,
+    morada: enderecoEntrega.value,
+    estado: 'Pendente', // Assuming 'Pendente' is a valid estado for a new encomenda
+    armazem: 'Leiria', // Replace with actual armazem or retrieve from user selection if applicable
+    // Since there's no direct data about EmbalagemTransporte these are placeholders
+    embalagemTransporteId: 0, // Placeholder for embalagemTransporteId
+    encomendaProdutoDTOs: productsCarrinho.value.map(p => ({
+      produtoId: p.id,
+      quantidade: p.unidades
+    })),
+
+  };
+
+  try {
+    // Make the POST request to create the new encomenda
+    const response = await authStore.fetchWithAuth(`${api}/encomendas`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${authStore.token}`, // Include the token here
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(encomendaPayload)
+    });
+
+    // Handle the response from the POST request
+    console.log('Encomenda created:', response);
+    alert('Encomenda criada com sucesso!');
+
+    // Reset the cart and close the modal
+    productsCarrinho.value = [];
+    enderecoEntrega.value = '';
+    showAddressModal.value = false;
+    clearCarrinho();
+  } catch (error) {
+    console.error('Error creating encomenda:', error);
+    alert('Ocorreu um erro ao criar a encomenda. Por favor, tente novamente.');
+  }
 };
+
+
+
 
 // Function to clear the cart
 const clearCarrinho = () => {
@@ -123,19 +169,7 @@ const clearCarrinho = () => {
   enderecoEntrega.value = ''; // Also clear the address field
 };
 
-const products = ref([
-  { id: 1, nome: 'Produto 1', marca: 'Marca A', preco: '10', fornecedor: 'Fornecedor X', quantidade: "330", medida:"ml" },
-  { id: 2, nome: 'Produto 2', marca: 'Marca B', preco: '20',fornecedor: 'Fornecedor Y', quantidade: "1", medida:"L"  },
-  { id: 3, nome: 'Produto 2', marca: 'Marca B', preco: '20',fornecedor: 'Fornecedor Y', quantidade: "1", medida:"L"  },
-  { id: 4, nome: 'Produto 2', marca: 'Marca B', preco: '20',fornecedor: 'Fornecedor Y', quantidade: "1", medida:"L"  },
-  { id: 5, nome: 'Produto 2', marca: 'Marca B', preco: '20',fornecedor: 'Fornecedor Y', quantidade: "1", medida:"L"  },
-  { id: 6, nome: 'Produto 2', marca: 'Marca B', preco: '20',fornecedor: 'Fornecedor Y', quantidade: "1", medida:"L"  },
-  { id: 7, nome: 'Produto 2', marca: 'Marca B', preco: '20',fornecedor: 'Fornecedor Y', quantidade: "1", medida:"L"  },
-  { id: 8, nome: 'Produto 2', marca: 'Marca B', preco: '20',fornecedor: 'Fornecedor Y', quantidade: "1", medida:"L"  },
-  { id: 9, nome: 'Produto 2', marca: 'Marca B', preco: '20',fornecedor: 'Fornecedor Y', quantidade: "1", medida:"L"  },
-  { id: 10, nome: 'Produto 2', marca: 'Marca B', preco: '20',fornecedor: 'Fornecedor Y', quantidade: "1", medida:"L"  },
-  { id: 11, nome: 'Produto 2', marca: 'Marca B', preco: '20',fornecedor: 'Fornecedor Y', quantidade: "1", medida:"L"  },
-  { id: 12, nome: 'Produto 2', marca: 'Marca B', preco: '20',fornecedor: 'Fornecedor Y', quantidade: "1", medida:"L"  }]);
+const products = ref([]);
 const productsCarrinho = ref([]);
 
 function addProdutoToCarrinho(produto) {
@@ -150,11 +184,20 @@ function removeProdutoFromCarrinho(productId) {
 }
 
 
-
-
 function isProductInCart(produto) {
   return productsCarrinho.value.some(p => p.id === produto.id);
 }
+
+const fetchProducts = async () => {
+  try {
+    const response = await authStore.fetchWithAuth(`${api}/produtos`);
+    products.value = response; // Atualize os produtos com a resposta da API
+  } catch (error) {
+    console.error('Erro ao buscar produtos:', error);
+  }
+};
+
+onMounted(fetchProducts);
 </script>
 
 <style>
