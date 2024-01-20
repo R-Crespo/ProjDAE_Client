@@ -10,6 +10,10 @@ export const useAuthStore = defineStore("authStore", () => {
     const username = computed(() => user.value?.username);
 
 
+    const isAuthenticated = computed(() => !!token.value);
+
+
+
 
     function logout() {
         localStorage.removeItem('token');
@@ -32,5 +36,5 @@ export const useAuthStore = defineStore("authStore", () => {
         }
     }
 
-    return { token, user, logout, isCliente, isFornecedor, isOperador, fetchWithAuth, username }
+    return { token, user, logout, isCliente, isFornecedor, isOperador, fetchWithAuth,isAuthenticated, username }
 })

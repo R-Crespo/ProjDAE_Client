@@ -15,8 +15,8 @@
           <nuxt-link class="nav-link col-sm" to="/auth-test">Minhas Encomendas</nuxt-link>-->
         </div>
         <div class="row me-2">
-          <nuxt-link class="nav-link col-sm" to="/auth/login">Login</nuxt-link>
-          <a class="nav-link col-sm" href="#" @click.prevent="logout">Logout</a>
+          <nuxt-link v-if="!authStore.isAuthenticated" class="nav-link col-sm" to="/auth/login">Login</nuxt-link>
+          <nuxt-link v-if="authStore.isAuthenticated " class="nav-link col-sm" href="#" @click.prevent="logout">Logout</nuxt-link>
         </div>
       </nav>
     </header>
