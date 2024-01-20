@@ -2,8 +2,7 @@ import { useAuthStore } from "../store/auth-store.js";
 
 export default defineNuxtRouteMiddleware((to, from) => {
     const authStore = useAuthStore();
-    console.log(authStore.token)
-    if (authStore.token == null && to.path != '/auth/login' && to.path != '/') {
+    if (authStore.token == null && to.path != '/auth/login' && to.path != '/' && to.path != '/sensores') {
         return navigateTo('/auth/login')
     }
 

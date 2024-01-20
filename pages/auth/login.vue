@@ -62,12 +62,12 @@ async function login() {
   user.value = userData.value
 
   //ALTERAR PARA VALOR DINAMICO
-  if (user.value?.tipo === "Fornecedor") {
-    router.push(`/produtos/_username`); // alterar para    router.push(`/produtos/${user.value.username}`);
-  } else if (user.value?.tipo === "Operador") {
-    router.push(`/encomendas/_username`); // alterar para router.push(`/encomendas/${user.value.username}`);
-  } else if (user.value?.tipo === "Cliente") {
-    router.push(`/clientes/_username`); // alterar para router.push(`/clientes/${user.value.username}`);
+  if (authStore.isFornecedor) {
+    router.push(`/produtos`);
+  } else if (authStore.isOperador) {
+    router.push(`/encomendas/${authStore.username}`);
+  } else if (authStore.isCliente) {
+    router.push(`/clientes/${authStore.username}`);
   }
 }
 </script>
