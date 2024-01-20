@@ -36,5 +36,5 @@ export const useAuthStore = defineStore("authStore", () => {
         }
     }
 
-    return { token, user, logout, isCliente, isFornecedor, isOperador, fetchWithAuth,isAuthenticated, username }
+    return { token, user, logout, isCliente, isFornecedor, isOperador, fetchWithAuth ,isAuthenticated, username }
 })
