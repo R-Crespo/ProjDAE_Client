@@ -28,7 +28,7 @@
             <td class="pt-3">{{ encomenda.data_de_entrega }}</td>
             <td class="align-content-center">
               <!-- Navigate to the static _id.vue page -->
-              <nuxt-link to="/encomendas/_id" class="btn btn-secondary">
+              <nuxt-link to="/encomendas/$(encomenda.id)" class="btn btn-secondary">
                 <i class="bi bi-list-columns-reverse"></i>
               </nuxt-link>
             </td>

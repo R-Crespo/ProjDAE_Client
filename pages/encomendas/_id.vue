@@ -56,28 +56,44 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-const config = useRuntimeConfig()
-const api = config.public.API_URL
+import { useAuthStore } from '~/store/auth-store.js';
+
+
+
+const authStore = useAuthStore();
+const route = useRoute();
+const config = useRuntimeConfig();
+const api = config.public.API_URL;L
+
+
+
 // Simulated data for an order (normally this would be fetched from an API or store)
-const encomendas = [
-  { id: 1, total: '67.45', estado: 'Entregue', armazem_saida: 'Amor', data_de_entrega: '10/12/2022', produtos: [{ id: 1, nome: 'Produto 1', marca: 'Marca A', preco: '10', fornecedor: 'Fornecedor X' },
-      { id: 2, nome: 'Produto 2', marca: 'Marca B', preco: '20', fornecedor: 'Fornecedor Y' }],
-    localEntrega: "Rua do Pinhal Grande, Lote 2, 3ºD", observacoes : [{ type: "Temperatura", value: "18", unit: "Cº", timestamp: "10/12/2022, 8:50"},
-      { type: "Humidade", value: "0.03", unit: "Kg/m³", timestamp: "10/12/2022, 8:50"},
-      { type: "Temperatura", value: "18", unit: "Cº", timestamp: "10/12/2022, 8:50"},
-      { type: "Humidade", value: "0.04", unit: "Kg/m³", timestamp: "10/12/2022, 8:50"},
-      { type: "Temperatura", value: "18", unit: "Cº", timestamp: "10/12/2022, 8:50"},
-      { type: "Humidade", value: "0.03", unit: "Kg/m³", timestamp: "10/12/2022, 8:50"}]}
-];
+
 
 /*
 const route = useRoute();
 const encomendaId = parseInt(route.params.id, 10);
 const encomenda = ref(encomendas.find(e => e.id === encomendaId));
 */
-const encomenda = ref(encomendas[0]);
+const encomenda = ref(null);
+
+const fetchEncomendaDetails = async (encomendaId) => {
+  try {
+    const response = await authStore.fetchWithAuth(`${api}/encomendas/${encomendaId}`);
+    encomenda.value = response.data; // Supondo que a resposta da API tenha um campo data
+  } catch (error) {
+    console.error('Erro ao buscar detalhes da encomenda:', error);
+  }
+};
 
 // Function to determine the class based on the order status
+
+
+onMounted(() => {
+  const encomendaId = route.params.id
+  fetchEncomendaDetails(encomendaId);
+});
+
 const estadoClass = (estado) => {
   switch (estado) {
     case 'Entregue':
