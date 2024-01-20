@@ -12,32 +12,24 @@
         <table class="table">
           <thead>
           <tr>
+            <th scope="col">Id</th>
             <th scope="col">Nome</th>
             <th scope="col">Marca</th>
             <th scope="col">Preço</th>
-            <th scope="col">Fornecedor</th>
-            <th scope="col">Estatísticas dos Sensores</th>
             <th scope="col">Consumo</th>
             <th scope="col">Mais Opções</th>
           </tr>
           </thead>
           <tbody>
           <tr v-for="produto in products" :key="produto.id">
+            <td class="pt-3">{{ produto.id }}</td>
             <td class="pt-3">{{ produto.nome }}</td>
             <td class="pt-3">{{ produto.marca }}</td>
             <td class="pt-3">{{ produto.preco }} €</td>
-            <td class="pt-3">{{ produto.fornecedor }}</td>
+            <td class="pt-3">{{ produto.quantidade }} {{ produto.unidadeMedida }}</td>
             <td>
-              <div v-for="sensor in produto.sensores" :key="sensor.tipo">
-                {{ sensor.tipo }}:
-                <span v-if="sensor.tipo === 'Temperatura'">{{ sensor.valor }}ºC</span>
-                <span v-else>{{ sensor.valor }}{{ sensor.unidade }}</span>
-              </div>
-            </td>
-            <td>{{ produto.consumo }}</td>
-            <td>
-              <button class="btn btn-secondary me-2" @click="verDetalhes(produto.id)"><i class="bi bi-list-ul"></i></button>
-              <button class="btn btn-danger" @click="removerProduto(produto.id)"><i class="bi bi-x-circle"></i></button>
+              <button class="btn btn-secondary me-2" @click="verDetalhes(produto.id)">+info</button>
+              <button class="btn btn-danger" @click="removerProduto(produto.id)">Delete</button>
             </td>
           </tr>
           </tbody>
@@ -48,49 +40,45 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import {onMounted, ref} from 'vue';
 import { useRouter } from 'vue-router';
+import {useAuthStore} from "../../store/auth-store.js";
 
-const products = ref([
-  {
-    id: 1,
-    nome: 'Tinteiro 1',
-    marca: 'Marca A',
-    preco: '10',
-    fornecedor: 'Fornecedor X',
-    sensores: [
-      { tipo: 'Temperatura', valor: '20', unidade: 'C' }
-    ],
-    consumo: '75%' // Nível atual de tinta
-  },
-  {
-    id: 2,
-    nome: 'Tinteiro 2',
-    marca: 'Marca B',
-    preco: '20',
-    fornecedor: 'Fornecedor Y',
-    sensores: [
-      { tipo: 'Temperatura', valor: '22', unidade: 'C' }
-    ],
-    consumo: '40%' // Nível atual de tinta
-  },
-  // ... adicione mais produtos conforme necessário
-]);
+const products = ref([]);
 
 const router = useRouter();
+const authStore = useAuthStore();
+const config = useRuntimeConfig();
+const apiURL = config.public.API_URL;
 
 const navigateToCreatePage = () => {
   router.push('/produtos/create');
 };
 
 const verDetalhes = (id) => {
-  // Aqui você pode adicionar lógica para ver detalhes do produto
-  console.log('Ver detalhes do produto com id:', id);
-  router.push('/produtos/_id')
+  router.push(`/produtos/${id}`)
 };
 
-const removerProduto = (id) => {
-  // Aqui você pode adicionar lógica para remover um produto
-  console.log('Remover produto com id:', id);
+const removerProduto = async (id) => {
+  try {
+    const data = await authStore.fetchWithAuth(`${apiURL}/produtos/${id}`,{method: 'DELETE'});
+    await fetchProdutos();
+  } catch (error) {
+    console.error(error);
+  }
 };
+
+
+// Função para buscar dados da embalagem de transporte
+async function fetchProdutos() {
+  try {
+    const data = await authStore.fetchWithAuth(`${apiURL}/produtos`);
+    console.log(data);
+    products.value = data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+onMounted(fetchProdutos)
 </script>

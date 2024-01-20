@@ -1,7 +1,7 @@
 <template>
   <div class="input-group ms-2 d-flex justify-content-around" >
     <div>
-      <h1 class="d-flex justify-content-center">Produto #1</h1>
+      <h1 class="d-flex justify-content-center">Produto #{{ $route.params.id }}</h1>
       <br>
       <form @submit.prevent="create" class="row">
         <div class="col">
@@ -17,8 +17,8 @@
           </div>
           <div class="row">
             <div class="mb-3 col">
-              <label for="inputFornecedor" class="form-label">Fornecedor</label>
-              <input type="text" v-model="produto.fornecedor" class="form-control" id="inputFornecedor" :readonly="!authStore.isFornecedor">
+              <label for="inputPreco" class="form-label">Preço</label>
+              <input type="text" v-model="produto.preco" class="form-control" id="inputPreco" :readonly="!authStore.isFornecedor">
             </div>
             <div class="mb-3 col">
               <label for="inputTipo" class="form-label">Tipo</label>
@@ -32,44 +32,40 @@
             </div>
             <div class="mb-3 col">
               <label for="inputUnidadeDeMedida" class="form-label">Unidade de medida</label>
-              <input type="text" v-model="produto.medida" class="form-control" id="inputUnidadeDeMedida" :readonly="!authStore.isFornecedor">
+              <input type="text" v-model="produto.unidadeMedida" class="form-control" id="inputUnidadeDeMedida" :readonly="!authStore.isFornecedor">
             </div>
           </div>
           <div class="mb-3">
-            <label for="inputPreco" class="form-label">Preço</label>
-            <input type="number" v-model="produto.preco" class="form-control" id="inputPreco" :readonly="!authStore.isFornecedor">
-          </div>
-          <div class="mb-3">
             <label for="inputConteudo" class="form-label">Descricao</label>
-            <textarea rows="3" type="text" v-model="produto.Descricap" class="form-control" id="inputConteudo" :readonly="!authStore.isFornecedor"></textarea>
+            <textarea rows="3" type="text" v-model="produto.descricao" class="form-control" id="inputConteudo" :readonly="!authStore.isFornecedor"></textarea>
           </div>
           <div class="d-flex justify-content-around">
-            <button class="btn btn-secondary me-2 col-4" type="reset">Back</button>
+            <button class="btn btn-secondary me-2 col-4" type="reset" @click="router.back()">Back</button>
           </div>
         </div>
         <div class="col" v-if="authStore.isFornecedor">
           <div class="mb-3">
             <label for="inputTipoEmbalagem" class="form-label">Tipo de Embalagem</label>
-            <input type="text" v-model="produto.embalagemPrototipo.tipo" class="form-control" id="inputTipoEmbalagem" >
+            <input type="text" v-model="embalagemPrototipo.tipo" class="form-control" id="inputTipoEmbalagem" >
           </div>
           <div class="mb-3">
             <label for="inputFuncaoEmbalagem" class="form-label">Função da Embalagem</label>
-            <input type="text" v-model="produto.embalagemPrototipo.funcao" class="form-control" id="inputFuncaoEmbalagem">
+            <input type="text" v-model="embalagemPrototipo.funcao" class="form-control" id="inputFuncaoEmbalagem">
           </div>
           <div class="mb-3">
             <label for="inputMaterialEmbalagem" class="form-label">Material da Embalagem</label>
-            <input type="text" v-model="produto.embalagemPrototipo.material" class="form-control" id="inputMaterialEmbalagem">
+            <input type="text" v-model="embalagemPrototipo.material" class="form-control" id="inputMaterialEmbalagem">
           </div>
           <div class="mb-3">
             <label for="inputPesoEmbalagem" class="form-label">Peso da Embalagem</label>
-            <input type="Number" v-model="produto.embalagemPrototipo.peso" class="form-control" id="inputPesoEmbalagem">
+            <input type="Number" v-model="embalagemPrototipo.peso" class="form-control" id="inputPesoEmbalagem">
           </div>
           <div class="mb-3">
             <label for="inputVolumeEmbalagem" class="form-label">Volume da Embalagem</label>
-            <input type="Number" v-model="produto.embalagemPrototipo.volume" class="form-control" id="inputVolumeEmbalagem">
+            <input type="Number" v-model="embalagemPrototipo.volume" class="form-control" id="inputVolumeEmbalagem">
           </div>
           <div class="d-flex justify-content-around" v-if="authStore.isFornecedor">
-            <button class="btn btn-primary col-4 mt-5" type="submit">Atualizar</button>
+            <button class="btn btn-primary col-4 mt-5" type="submit" @click="updateProduto(produto.id)">Atualizar</button>
           </div>
         </div>
       </form>
@@ -77,7 +73,7 @@
     <div class="d-flex justify-content-end w-50" v-if="authStore.isFornecedor">
       <div>
         <div class="d-flex flex-row justify-content-end">
-          <h1 class="d-flex justify-content-center">Regras Produto #{{ produto.id }}</h1>
+          <h1 class="d-flex justify-content-center">Regras Produto #{{ $route.params.id }}</h1>
           <button @click="addRegra" class="btn btn-success ms-5 mt-2 mb-2">Add Regra</button>
         </div>
         <div v-for="(regra, index) in regras" :key="regra.id" class="d-flex flex-row mt-3 align-content-end">
@@ -85,7 +81,13 @@
           <input type="number" v-model="regra.valor" class="form-control ms-2 mb-2 w-25  h-100" placeholder="Valor">
           <input type="text" v-model="regra.comparador" class="form-control ms-2 mb-2 w-50  h-100" placeholder="Comparador">
           <textarea type="text" v-model="regra.mensagem" class="form-control ms-2 mb-2 w-50" placeholder="Mensagem" rows="1"></textarea>
-          <input type="text" v-model="regra.tipo_sensor" class="form-control ms-2 mb-2 w-50 h-100" placeholder="Tipo de Sensor">
+          <select v-model="regra.tipoSensor" class="form-control ms-2 mb-2 w-25 h-100">
+            <option disabled value="">Tipo de sensor</option>
+            <option value="Temperatura">Temperatura</option>
+            <option value="Humidade">Humidade</option>
+            <option value="Pressao">Pressão</option>
+            <option value="GPS">GPS</option>
+          </select>
           <button @click="removeRegra(regra.id)" class="btn btn-danger ms-2 mb-2  h-100"><i class="bi bi-x-circle"></i></button>
         </div>
       </div>
@@ -116,58 +118,31 @@
   {{ message }}
 </template>
 <script setup>
-import { useRouter } from 'vue-router'
-import {computed, ref} from 'vue';
+import { useRouter ,useRoute} from 'vue-router'
+import {computed, onMounted, ref} from 'vue';
 import {useAuthStore} from "../../../store/auth-store.js";
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
-
-const produto = ref({
-  id: 1,
-  nome: 'Produto 1',
-  marca: 'Marca A',
-  preco: '10',
-  tipo: '',
-  fornecedor: 'Fornecedor X',
-  quantidade: "330",
-  medida:"ml",
-  embalagemPrototipo: {
-    tipo: '',
-    funcao: '',
-    material: '',
-    peso: 0,
-    volume: 0
-  },
-  regras: []
-})
+const produto = ref([])
 const regras = ref([]);
 const id = ref(0);
-
-
-const observacoes = ref([
-  { sensor: "Temperatura", timestamp: '10/12/2024,10:10', valor: '10', unidade: 'Cº', estado: 'OK' },
-  { sensor: "Pressao", timestamp: '10/12/2024,10:10', valor: '0.5', unidade: 'Km',estado: 'OK' },
-  { sensor: "Temperatura", timestamp: '10/12/2024,10:20', valor: '11', unidade: 'Cº', estado: 'OK' },
-  { sensor: "Pressao", timestamp: '10/12/2024,10:20', valor: '0.5', unidade: 'Km',estado: 'OK' },
-  { sensor: "Temperatura", timestamp: '10/12/2024,10:30', valor: '17', unidade: 'Cº', estado: 'Regra #2 violada' },
-  { sensor: "Pressao", timestamp: '10/12/2024,10:30', valor: '0.3', unidade: 'Km',estado: 'OK' },
-  { sensor: "Temperatura", timestamp: '10/12/2024,10:50', valor: '9', unidade: 'Cº', estado: 'OK' },
-  { sensor: "Pressao", timestamp: '10/12/2024,10:50', valor: '0.8', unidade: 'Km',estado: 'Regra #3 violada' }]);
+const embalagemPrototipo = ref([])
+const observacoes = ref([]);
 
 const message = ref('')
-const config = useRuntimeConfig()
-const api = config.public.API_URL
+const config = useRuntimeConfig();
+const apiURL = config.public.API_URL;
 
 function addRegra() {
   const newRegra = {
-    id: id.value,
+    id: 0 - regras.value.length - 1,
     valor: 0,
     comparador: '',
     mensagem: '',
-    tipo_sensor: ''
+    tipoSensor: ''
   };
-  id.value += 1;
   regras.value.push(newRegra);
 }
 
@@ -183,8 +158,44 @@ function estadoClass(estado) {
         return "btn-danger disabled"
   }
 }
-async function create() {
 
+async function fetchProduto() {
+  try {
+    const data = await authStore.fetchWithAuth(`${apiURL}/produtos/${route.params.id}`);
+    console.log(data)
+    produto.value = data;
+    regras.value = data.regras;
+    const dataEP = await authStore.fetchWithAuth(`${apiURL}/embalagensProduto/${produto.value.embalagemProdutoId}`);
+    embalagemPrototipo.value = dataEP;
+  } catch (error) {
+    console.error(error);
+  }
 }
+async function updateProduto(id) {
+  try {
+    console.log(JSON.stringify({
+      produto: produto.value,
+      embalagemProduto: embalagemPrototipo.value,
+      regras: regras.value
+    }))
+    const response = await authStore.fetchWithAuth(`${apiURL}/produtos/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        produto: produto.value,
+        embalagemProduto: embalagemPrototipo.value,
+        regras: regras.value
+      })
+    });
+
+    fetchProduto()
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+onMounted(fetchProduto)
 
 </script>

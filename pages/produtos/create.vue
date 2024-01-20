@@ -18,7 +18,7 @@
           <div class="row">
             <div class="mb-3 col">
               <label for="inputPreco" class="form-label">Preço</label>
-              <input type="number" v-model="produto.preco" class="form-control" id="inputPreco">
+              <input type="text" v-model="produto.preco" class="form-control" id="inputPreco">
             </div>
             <div class="mb-3 col">
               <label for="inputTipo" class="form-label">Tipo</label>
@@ -81,7 +81,13 @@
           <input type="number" v-model="regra.valor" class="form-control ms-2 mb-2 w-25  h-100" placeholder="Valor">
           <input type="text" v-model="regra.comparador" class="form-control ms-2 mb-2 w-50  h-100" placeholder="Comparador">
           <textarea type="text" v-model="regra.mensagem" class="form-control ms-2 mb-2 w-50" placeholder="Mensagem" rows="1"></textarea>
-          <input type="text" v-model="regra.tipo_sensor" class="form-control ms-2 mb-2 w-50 h-100" placeholder="Tipo de Sensor">
+          <select v-model="regra.tipoSensor" class="form-control ms-2 mb-2 w-25 h-100">
+            <option disabled value="">Tipo de sensor</option>
+            <option value="Temperatura">Temperatura</option>
+            <option value="Humidade">Humidade</option>
+            <option value="Pressao">Pressão</option>
+            <option value="GPS">GPS</option>
+          </select>
           <button @click="removeRegra(regra.id)" class="btn btn-danger ms-2 mb-2  h-100"><i class="bi bi-x-circle"></i></button>
         </div>
       </div>
@@ -127,7 +133,7 @@ function addRegra() {
     valor: 0,
     comparador: '',
     mensagem: '',
-    tipo_sensor: ''
+    tipoSensor: ''
   };
   id.value += 1;
   regras.value.push(newRegra);
@@ -156,12 +162,7 @@ async function create() {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    message.value = "Produto criado com sucesso!";
+    router.back();
   } catch (e) {
     message.value = "Erro ao criar o produto: " + e.message;
   }
