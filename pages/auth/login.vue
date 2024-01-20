@@ -47,6 +47,7 @@ async function login() {
     return
   }
   token.value = data.value
+  localStorage.setItem('token', token.value);
   const {data: userData, error: userError} = await useFetch(`${api}/auth/user`, {
     method: 'get',
     headers: {
