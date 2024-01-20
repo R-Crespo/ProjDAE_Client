@@ -8,7 +8,7 @@
           <nuxt-link v-if="authStore.isCliente || authStore.isOperador" class="nav-link col" to="/encomendas/_username">Encomendas</nuxt-link>
           <!--Fornecedor Links
           <nuxt-link class="nav-link col-sm" to="/fornecedores/_username">Home Page</nuxt-link>-->
-          <nuxt-link v-if="authStore.isFornecedor" class="nav-link col" to="/produtos/_username">Produtos</nuxt-link>
+          <nuxt-link v-if="authStore.isFornecedor" class="nav-link col" to="/produtos">Produtos</nuxt-link>
           <nuxt-link v-if="authStore.isFornecedor" class="nav-link col" to="/embalagemTransporte">Embalagem Transporte</nuxt-link>
           <!--Operador Links
           <nuxt-link class="nav-link col-sm" to="/operadores/_username">Home Page</nuxt-link>

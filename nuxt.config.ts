@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import {useAuthStore} from "./store/auth-store";
+
 export default defineNuxtConfig({
   head: {
     link: [
@@ -19,5 +21,8 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
     '@pinia/nuxt'
-  ]
+  ],
+  router: {
+    middleware: ['auth-middleware.global'],
+  }
 })
