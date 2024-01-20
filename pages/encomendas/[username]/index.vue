@@ -133,15 +133,14 @@
 import { ref, computed } from 'vue';
 import { useAuthStore } from '~/store/auth-store.js';
 
+const config = useRuntimeConfig()
+const api = config.public.API_URL
+const authStore = useAuthStore()
 
 const { user } = storeToRefs(authStore);
 
 const userType = computed(() => user.value?.tipo);
 const username = computed(() => user.value?.username);
-
-const config = useRuntimeConfig()
-const api = config.public.API_URL
-const authStore = useAuthStore()
 
 const showDateModal = ref(false);
 const dataPrevistaEntrega = ref('');
