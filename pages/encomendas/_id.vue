@@ -4,13 +4,13 @@
       <div class="col">
         <h2>Detalhes da encomenda</h2>
         <div class="card">
-          <div class="card-body">
+          <div class="card-body" v-if="encomenda != null">
             <h5 class="card-title">Encomenda #{{ encomenda.id }}</h5>
             <p class="card-text">Total: {{ encomenda.total }} €</p>
             <p class="card-text">Estado: <span :class="estadoClass(encomenda.estado)">{{ encomenda.estado }}</span></p>
-            <p class="card-text">Armazem de saída: {{ encomenda.armazem_saida }}</p>
-            <p class="card-text">Data de Entrega: {{ encomenda.data_de_entrega }}</p>
-            <p class="card-text">Local de Entrega: {{ encomenda.localEntrega }}</p>
+            <p class="card-text">Armazem de saída: {{ encomenda.armazem }}</p>
+            <p class="card-text">Data de Entrega: {{ getData(encomenda.dataEntrega) }}</p>
+            <p class="card-text">Local de Entrega: {{ encomenda.morada }}</p>
             <h5>Produtos:</h5>
             <ul>
               <li v-for="produto in encomenda.produtos" :key="produto.id">
@@ -42,9 +42,9 @@
             <td class="pt-3">{{ encomenda.id }}</td>
             <td class="pt-3">{{ encomenda.total }} €</td>
             <td class="pt-3"><button class="btn" :class="estadoClass(encomenda.estado)">{{ encomenda.estado }}</button></td>
-            <td class="pt-3">{{ encomenda.armazem_saida }}</td>
-            <td class="pt-3">{{ encomenda.data_de_entrega }}</td>
-            <td class="align-content-center"><button class="btn btn-secondary"><i class="bi bi-list-columns-reverse"></i></button></td>
+            <td class="pt-3">{{ encomenda.armazem }}</td>
+            <td class="pt-3">{{ getData(encomenda.dataEntrega) }}</td>
+            <td class="align-content-center"><button class="btn btn-secondary" @click="getEncomenda(encomenda.id)"><i class="bi bi-list-columns-reverse"></i></button></td>
           </tr>
           </tbody>
         </table>
@@ -56,34 +56,58 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { useAuthStore } from '~/store/auth-store.js';
-
-
-
-const authStore = useAuthStore();
-const route = useRoute();
-const config = useRuntimeConfig();
-const api = config.public.API_URL;L
-
-
-
+import {useAuthStore} from "~/store/auth-store.js"
+const config = useRuntimeConfig()
+const api = config.public.API_URL
+const authStore = useAuthStore()
+const encomendas = ref()
+const encomenda = ref()
 // Simulated data for an order (normally this would be fetched from an API or store)
+//const encomendas = await useFetch(`${api}/encomendas/cliente/${username}`);
 
-
+if(authStore.isCliente){
+  const {data: dataEncomendas, error: encomendasError} = await useFetch(`${api}/encomendas/cliente/${authStore.user.username}`, {
+  method: 'get',
+  headers: {
+    'Accept': 'application/json',
+    'Authorization': 'Bearer ' + authStore.token
+  }
+  })
+  encomendas.value = dataEncomendas.value
+} else {
+  const {data: dataEncomendas, error: encomendasError} = await useFetch(`${api}/encomendas/operador/${authStore.user.username}`, {
+  method: 'get',
+  headers: {
+    'Accept': 'application/json',
+    'Authorization': 'Bearer ' + authStore.token
+  }
+  })
+  encomendas.value = dataEncomendas.value
+}
 /*
 const route = useRoute();
 const encomendaId = parseInt(route.params.id, 10);
 const encomenda = ref(encomendas.find(e => e.id === encomendaId));
 */
-const encomenda = ref(null);
 
-const fetchEncomendaDetails = async (encomendaId) => {
-  try {
-    const response = await authStore.fetchWithAuth(`${api}/encomendas/${encomendaId}`);
-    encomenda.value = response.data; // Supondo que a resposta da API tenha um campo data
-  } catch (error) {
-    console.error('Erro ao buscar detalhes da encomenda:', error);
-  }
+async function getEncomenda(encomendaId) {
+  const {data: dataEncomenda, error: encomendaError} = await useFetch(`${api}/encomendas/${encomendaId}`, {
+    method: 'get',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + authStore.token
+    } 
+  })
+  encomenda.value = dataEncomenda.value
+}
+
+// Função para converter da data
+const getData = (dateInMilliseconds) => {
+  const date = new Date(dateInMilliseconds);
+  const day = date.getDate();
+  const month = date.getMonth() + 1; // Note: Months are zero-based, so add 1
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
 };
 
 // Function to determine the class based on the order status
