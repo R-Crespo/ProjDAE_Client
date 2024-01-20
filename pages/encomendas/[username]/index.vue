@@ -1,7 +1,7 @@
 
 <template>
   <div class="container">
-    <div class="row">
+    <div v-if="userType === 'Operador'||userType === 'Cliente'" class="row">
       <div class="col">
         <h2>Minhas encomendas</h2>
         <table class="table">
@@ -130,8 +130,14 @@
   
 </template>
 <script setup>
-import { ref } from 'vue';
-import {useAuthStore} from "~/store/auth-store.js"
+import { ref, computed } from 'vue';
+import { useAuthStore } from '~/store/auth-store.js';
+
+
+const { user } = storeToRefs(authStore);
+
+const userType = computed(() => user.value?.tipo);
+const username = computed(() => user.value?.username);
 
 const config = useRuntimeConfig()
 const api = config.public.API_URL

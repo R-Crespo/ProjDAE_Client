@@ -8,15 +8,15 @@
           <nuxt-link v-if="authStore.isCliente || authStore.isOperador" class="nav-link col" to="/encomendas/_username">Encomendas</nuxt-link>
           <!--Fornecedor Links
           <nuxt-link class="nav-link col-sm" to="/fornecedores/_username">Home Page</nuxt-link>-->
-          <nuxt-link v-if="authStore.isFornecedor" class="nav-link col" to="/produtos/_username">Produtos</nuxt-link>
+          <nuxt-link v-if="authStore.isFornecedor" class="nav-link col" to="/produtos">Produtos</nuxt-link>
           <nuxt-link v-if="authStore.isFornecedor" class="nav-link col" to="/embalagemTransporte">Embalagem Transporte</nuxt-link>
           <!--Operador Links
           <nuxt-link class="nav-link col-sm" to="/operadores/_username">Home Page</nuxt-link>
           <nuxt-link class="nav-link col-sm" to="/auth-test">Minhas Encomendas</nuxt-link>-->
         </div>
         <div class="row me-2">
-          <nuxt-link class="nav-link col-sm" to="/auth/login">Login</nuxt-link>
-          <a class="nav-link col-sm" href="#" @click.prevent="logout">Logout</a>
+          <nuxt-link v-if="!authStore.isAuthenticated" class="nav-link col-sm" to="/auth/login">Login</nuxt-link>
+          <nuxt-link v-if="authStore.isAuthenticated " class="nav-link col-sm" href="#" @click.prevent="logout">Logout</nuxt-link>
         </div>
       </nav>
     </header>
