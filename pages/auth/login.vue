@@ -62,7 +62,7 @@ async function login() {
   user.value = userData.value
 
   //ALTERAR PARA VALOR DINAMICO
-  if (user.value?.tipo === "Fornecedor") {
+  if (user.value?.tipo === "Administrador") {
     router.push(`/produtos/_username`); // alterar para    router.push(`/produtos/${user.value.username}`);
   } else if (user.value?.tipo === "Operador") {
     router.push(`/encomendas/_username`); // alterar para router.push(`/encomendas/${user.value.username}`);

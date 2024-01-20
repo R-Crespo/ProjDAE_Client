@@ -1,7 +1,7 @@
 
 <template>
   <div class="container">
-    <div class="row">
+    <div v-if="userType === 'Operador'||userType === 'Cliente'" class="row">
       <div class="col">
         <h2>Minhas encomendas</h2>
         <table class="table">
@@ -39,7 +39,7 @@
     </div>
   </div>
   <div class="container">
-    <div class="row">
+    <div v-if="userType === 'Operador'" class="row">
       <div class="col">
         <h2>Entregas Realizadas pelo Operador: username</h2>
         <table class="table">
@@ -67,7 +67,7 @@
   </div>
   <!-- Seção para o operador manipular encomendas pendentes -->
   <div class="container mt-4">
-    <div class="row">
+    <div v-if="userType === 'Operador'" class="row">
       <div class="col">
         <h2>Encomendas Pendentes</h2>
         <table class="table">
@@ -102,7 +102,14 @@
   </div>
 </template>
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useAuthStore } from '~/store/auth-store.js';
+
+const authStore = useAuthStore();
+const { user } = storeToRefs(authStore);
+
+const userType = computed(() => user.value?.tipo);
+const username = computed(() => user.value?.username);
 
 // Static data for demonstration purposes
 const entregas = ref([
